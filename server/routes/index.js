@@ -39,7 +39,9 @@ router.post('/signin', function(req,res){
                     email: user.email
                 })
             }else{
-                console.log(`password salah`)
+                res.status(404).json({
+                    message: 'Email atau password salah'
+                })
             }
         })
         .then(token =>{

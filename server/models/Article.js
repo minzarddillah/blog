@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const articleSchema = new Schema({
     title: String,
     description: String,
-    user: { type: Schema.Types.ObjectId, ref: 'User'},
+    author: { type: Schema.Types.ObjectId, ref: 'User'},
     comment: [{ type: Schema.Types.ObjectId, ref: 'Comment'}]
 })
 

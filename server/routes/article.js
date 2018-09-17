@@ -3,22 +3,24 @@ const ObjectId = require('mongoose').Types.ObjectId
 const Article = require('../models/Article')
 const User = require('../models/User')
 const { verify } = require('../helpers/jwt')
-const { authen } = require('../helpers/auth')
+const { authen, author } = require('../helpers/auth')
 // authen author
 
 router.post('/', authen, function (req, res) {
     let userId 
-    let newArticle = new Article({
-        title: req.body.title,
-        description: req.body.description,
-        user: userId
-    })
+    let newArticle
     verify(req.headers.token)
-        .then(decoded =>{
-            userId = decoded._id
-            return newArticle.save()
+    .then(decoded =>{
+        userId = decoded._id
+        let newArticle = new Article({
+            title: req.body.title,
+            description: req.body.description,
+            author: ObjectId(userId)
+        })
+        return newArticle.save()
         })
         .then(article =>{
+            newArticle = article
             return User.findById(ObjectId(userId))
         })
         .then(user =>{
@@ -26,7 +28,6 @@ router.post('/', authen, function (req, res) {
             return user.save()
         })
         .then(newUser =>{
-            // console.log(newUser);
             res.status(200).json({
                 message: 'Success Create Article',
                 data: newArticle
@@ -38,5 +39,33 @@ router.post('/', authen, function (req, res) {
         })
 })
 
+router.get('/', function(req, res){
+    Article    
+        .find()
+        .then(articles => {
+            res.status(200).json(articles)
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
+})
+
+router.put('/', authen, author, function(req, res) {
+    console.log(`masuk put`)
+})
+
+router.delete('/', authen, author, function(req,res){
+    // console.log(`MASUK KE DELETE`)
+    Article
+        .findByIdAndRemove(ObjectId(req.body.articleId))
+        .then(response =>{
+            res.status(200).json({
+                message: 'Berhasil Delete Article'
+            })
+        })
+        .catch(err =>{
+            res.status(500).json(err)
+        })
+})
 
 module.exports = router
