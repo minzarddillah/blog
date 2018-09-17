@@ -24,10 +24,17 @@ router.post('/', authen, function (req, res) {
         .then(user =>{
             user.articles.push(ObjectId(newArticle._id))
             return user.save()
-            // console.log(user)
         })
         .then(newUser =>{
-
+            // console.log(newUser);
+            res.status(200).json({
+                message: 'Success Create Article',
+                data: newArticle
+            })
+            
+        })
+        .catch(err =>{
+            res.status(500).json(err)
         })
 })
 

@@ -1,4 +1,5 @@
 process.env.NODE_ENV = 'test'
+const ObjectId = require('mongoose').Types.ObjectId
 const app = require('../app')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
@@ -13,7 +14,7 @@ describe('article', function () {
         Article
             .remove({})
             .then(res =>{
-                return User.findByIdAndUpdate(ObjectId("5b9f63777897216c9219954c"),{ $unset: {articles:1} })
+                return User.findByIdAndUpdate(ObjectId("5b9f7199ed78957792190482"),{ $unset: {"articles": []}} )
             })
             .then(res =>{
                 done()
@@ -24,19 +25,22 @@ describe('article', function () {
         chai
             .request(app)
             .post('/articles')
-            .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNjM3Nzc4OTcyMTZjOTIxOTk1NGMiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTcyNjgwfQ.0b2iJw4sjd3RDkaIvWlKmeOsR8MkO3t0AwmeyYNvZG4`)
+            .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
             .send({
                 title: 'TEST ARTICLE',
                 description: 'TEST BUAT ARTICLE'
             })
             .end(function (err, res) {
+                let response = res.body
                 expect(res).to.have.status(200)
+                expect(response).to.have.property('message')
+                expect(response.message).to.equal('Success Create Article')
+                expect(response.data).to.have.property('title')
                 done()
             })
     })
 
 })
-
 
 describe('user', function () {
     this.afterAll(function (done) {

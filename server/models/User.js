@@ -10,13 +10,15 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        minlength: [6, `Password minimal 6 karakter`]
+        minlength: [6, `Password minimal 6 karakter`],
     },
     articles: [{type: Schema.Types.ObjectId, ref: 'Article'}]
 })
 
 userSchema.pre('validate', function() {
-    this.password = encrypt(this.password)
+    if(this.password.length < 30){
+        this.password = encrypt(this.password)
+    }
 });
 
 userSchema.post('save', function(error, doc, next){
