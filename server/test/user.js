@@ -22,24 +22,24 @@ describe('article', function () {
     // })
 
     // CREATE ARTICLE
-    it('POST /articles should return new article', function (done) {
-        chai
-            .request(app)
-            .post('/articles')
-            .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
-            .send({
-                title: 'TEST ARTICLE',
-                description: 'TEST BUAT ARTICLE'
-            })
-            .end(function (err, res) {
-                let response = res.body
-                expect(res).to.have.status(200)
-                expect(response).to.have.property('message')
-                expect(response.message).to.equal('Success Create Article')
-                expect(response.data).to.have.property('title')
-                done()
-            })
-    })
+    // it('POST /articles should return new article', function (done) {
+    //     chai
+    //         .request(app)
+    //         .post('/articles')
+    //         .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
+    //         .send({
+    //             title: 'TEST ARTICLE',
+    //             description: 'TEST BUAT ARTICLE'
+    //         })
+    //         .end(function (err, res) {
+    //             let response = res.body
+    //             expect(res).to.have.status(200)
+    //             expect(response).to.have.property('message')
+    //             expect(response.message).to.equal('Success Create Article')
+    //             expect(response.data).to.have.property('title')
+    //             done()
+    //         })
+    // })
 
     // GET ALL ARTICLES
     it('GET /articles should return all artice', function (done) {
@@ -66,6 +66,8 @@ describe('article', function () {
                 title: 'UPDATE JUDUL ARTICLE'
             })
             .end(function (err, res) {
+                expect(res).to.have.status(200)
+                expect(res.body.message).to.equal('Success Update Article')
                 done()
             })
     })

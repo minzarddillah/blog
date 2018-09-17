@@ -51,7 +51,25 @@ router.get('/', function(req, res){
 })
 
 router.put('/', authen, author, function(req, res) {
-    console.log(`masuk put`)
+    let update = {}
+    let keys = Object.keys(req.body)
+    let values = Object.values(req.body)
+    
+    for(let i = 0 ; i < keys.length ; i++){
+        if(keys[i] !== "articleId"){
+            update[keys[i]] = values[i]
+        }
+    }
+    Article
+        .findByIdAndUpdate(ObjectId(req.body.articleId), update)
+        .then(response =>{
+            res.status(200).json({
+                message: 'Success Update Article'
+            })
+        })
+        .catch(err =>{
+            res.status(500).json(err)
+        })
 })
 
 router.delete('/', authen, author, function(req,res){
