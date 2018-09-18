@@ -3,7 +3,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const Article = require('../models/Article')
 const User = require('../models/User')
 const { verify } = require('../helpers/jwt')
-const { authen, author } = require('../helpers/auth')
+const { authen, authorArticle } = require('../helpers/auth')
 // authen author
 
 router.post('/', authen, function (req, res) {
@@ -50,7 +50,7 @@ router.get('/', function(req, res){
         })
 })
 
-router.put('/', authen, author, function(req, res) {
+router.put('/', authen, authorArticle, function(req, res) {
     let update = {}
     let keys = Object.keys(req.body)
     let values = Object.values(req.body)
@@ -72,7 +72,7 @@ router.put('/', authen, author, function(req, res) {
         })
 })
 
-router.delete('/', authen, author, function(req,res){
+router.delete('/', authen, authorArticle, function(req,res){
     // console.log(`MASUK KE DELETE`)
     Article
         .findByIdAndRemove(ObjectId(req.body.articleId))

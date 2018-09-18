@@ -22,7 +22,7 @@ module.exports = {
                 }
             })
     },
-    author: function(req,res,next){
+    authorArticle: function(req,res,next){
         verify(req.headers.token)
             .then(decoded =>{
                 return Article.findOne({

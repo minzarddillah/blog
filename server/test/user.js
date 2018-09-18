@@ -1,10 +1,9 @@
 process.env.NODE_ENV = 'test'
-const ObjectId = require('mongoose').Types.ObjectId
 const app = require('../app')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const User = require('../models/User')
-const Article = require('../models/Article')
+const Comments = require('../models/Comment')
 var expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -87,6 +86,35 @@ describe('article', function () {
     //             done()
     //         })
     // })
+})
+
+describe('comment', function () {
+    // this.afterAll(function(done){
+    //     Comments
+    //         .remove({})
+    //         .then(response =>{
+    //             done()
+    //         })
+    // })
+
+    it('POST /comment', function (done) {
+        chai
+            .request(app)
+            .post('/comment')
+            .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
+            .send({
+                userId: "5b9f7f1374cce202f1a5f5d8",
+                articleId: "5b9f7199ed78957792190482",
+                content: 'INI KOMENTAR'
+            })
+            .end(function (err, res) {
+                let response = res.body
+                expect(res).to.have.status(200)
+                expect(response).to.have.property('message')
+                expect(response.message).to.equal('Berhasil menambah komenter')
+                done()
+            })
+    })
 })
 
 describe('user', function () {

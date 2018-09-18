@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const article = require('./article')
+const comment = require('./comment')
 const User = require('../models/User')
 const { decrypt } = require('../helpers/hash')
 const { sign } = require('../helpers/jwt')
@@ -11,7 +12,6 @@ router.post('/signup', function (req, res) {
         email: req.body.email,
         password: req.body.password
     })
-
     newUser
         .save()
         .then(newUserDb => {
@@ -21,6 +21,7 @@ router.post('/signup', function (req, res) {
             })
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json({
                 message: err
             })
@@ -53,7 +54,9 @@ router.post('/signin', function(req,res){
             res.status(500).json(err)
         })
 })
+
 router.use('/articles', article)
 
+router.use('/comment', comment)
 
 module.exports = router
