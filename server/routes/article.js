@@ -14,7 +14,7 @@ router.post('/', authen, function (req, res) {
         userId = decoded._id
         let newArticle = new Article({
             title: req.body.title,
-            description: req.body.description,
+            content: req.body.content,
             author: ObjectId(userId)
         })
         return newArticle.save()
@@ -41,9 +41,26 @@ router.post('/', authen, function (req, res) {
 
 router.get('/', function(req, res){
     Article    
-        .find()
+        .find().populate('author')
         .then(articles => {
             res.status(200).json(articles)
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
+})
+
+router.get('/:id', function(req, res){
+    Article
+        .findById(ObjectId(req.params.id)).populate('author')
+        .then(article => {
+            if(article){
+                res.status(200).json(article)
+            }else{
+                res.status(404).json({
+                    message: 'Article Not Found'
+                })
+            }
         })
         .catch(err => {
             res.status(500).json(err)

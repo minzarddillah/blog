@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import Contents from './components/Content.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -14,9 +13,20 @@ export default new Router({
       component: Home,
       children: [
         {
+          path: 'add-article',
+          component: () => import('./components/AddArticle.vue')
+        },
+        {
           path: '/',
-          name: 'contents',
-          component: Contents
+          component: () => import('./components/Article.vue')
+        },
+        {
+          path: '/edit-article/:id',
+          component: () => import('./components/EditArticle.vue')
+        },
+        {
+          path: '/article/:id',
+          component: () => import('./components/fullPageArticle.vue')
         }
       ]
     },

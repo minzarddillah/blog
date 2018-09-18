@@ -27,7 +27,9 @@ userSchema.pre('validate', function(next){
 })
 
 userSchema.post('validate', function(user) {
-    user.password = encrypt(user.password)
+    if(user.password.length <= 30){
+        user.password = encrypt(user.password)
+    }
 });
 
 userSchema.post('save', function(error, doc, next){

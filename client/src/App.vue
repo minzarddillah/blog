@@ -110,8 +110,10 @@ export default {
         }
       })
         .then(response => {
-          let token = response.data.token
-          localStorage.setItem('token', token)
+          let result = response.data
+          localStorage.setItem('token', result.token)
+          localStorage.setItem('name', result.name)
+          localStorage.setItem('email', result.email)
           window.location.replace('/')
         })
         .catch(err => {
@@ -128,31 +130,18 @@ export default {
         .then(response => {
           console.log(`masuk responose`)
           console.log(response)
+          this.nameRegister = ''
+          this.emailRegister = ''
+          this.passwordRegister = ''
         })
         .catch(err => {
           console.log(JSON.stringify(err))
         })
-      // axios({
-      //   url: 'http://localhost:3000/signup',
-      //   method: 'post',
-      //   data: {
-      //     name: this.nameRegister,
-      //     email: this.emailRegister,
-      //     password: this.passwordRegister
-      //   }
-      // })
-      //   .then(response => {
-      //     console.log(`masuk then`)
-      //     console.log(response)
-      //   })
-      //   .catch(err => {
-      //     console.log(`masuk error`)
-      //     console.log(err.message)
-      //   })
       console.log(this.nameRegister, this.emailRegister, this.passwordRegister)
     },
     logout () {
       localStorage.clear()
+      this.isLogin = false
       window.location.replace('/')
     }
   },
@@ -164,6 +153,10 @@ export default {
 }
 </script>
 <style>
+  * {
+    margin: 0px;
+    padding: 0px;
+  }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

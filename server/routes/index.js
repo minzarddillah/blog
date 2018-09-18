@@ -21,7 +21,6 @@ router.post('/signup', function (req, res) {
             })
         })
         .catch(err => {
-            console.log(err)
             res.status(500).json({
                 message: err
             })
@@ -31,8 +30,10 @@ router.post('/signup', function (req, res) {
 router.post('/signin', function(req,res){
     let email = req.body.email
     let password = req.body.password
+    let dataUser
     User.findOne({email: email})
         .then(user =>{
+            dataUser = user
             let hashPassword = user.password
             if(decrypt(password, hashPassword)){
                 return sign({
@@ -47,7 +48,9 @@ router.post('/signin', function(req,res){
         })
         .then(token =>{
             res.status(200).json({
-                token: token
+                token: token,
+                name: dataUser.name,
+                email: dataUser.email
             })
         })
         .catch(err =>{
