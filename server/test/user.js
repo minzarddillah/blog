@@ -99,20 +99,6 @@ describe('article', function () {
             })
     })
 
-    // DELETE ARTICLE
-    it('/DELETE /articles should return delete article', function (done) {
-        chai
-            .request(app)
-            .del('/articles')
-            .set('token', token)
-            .send({
-                articleId: articleId
-            })
-            .end(function (err, res){
-                expect(res).to.have.status(200)
-                done()
-            })
-    })
 
 
     // ==================== TEST COMMENT ====================
@@ -150,6 +136,39 @@ describe('article', function () {
             .end(function (err, res) {
                 expect(res).to.have.status(200)
                 expect(res.body.message).to.equal('Berhasil Edit Comment')
+                done()
+            })
+    })
+
+
+
+
+    // ==================== GET SPESIFIC ARTICLE AND COMMENT ====================
+    it('GET /article/:id should return article and comment', function (done) {
+        chai
+            .request(app)
+            .get(`/articles/${articleId}`)
+            .end(function (err, res) {
+                expect(res).to.have.status(200)
+                done()
+            })
+    })
+
+
+
+    // ==================== DELTE ARTICLE AND COMMENT ====================
+    
+    // DELETE ARTICLE
+    it('/DELETE /articles should return delete article', function (done) {
+        chai
+            .request(app)
+            .del('/articles')
+            .set('token', token)
+            .send({
+                articleId: articleId
+            })
+            .end(function (err, res){
+                expect(res).to.have.status(200)
                 done()
             })
     })

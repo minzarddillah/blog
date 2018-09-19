@@ -52,7 +52,7 @@ router.get('/', function(req, res){
 
 router.get('/:id', function(req, res){
     Article
-        .findById(ObjectId(req.params.id)).populate('author')
+        .findById(ObjectId(req.params.id)).populate('author').populate('comment')
         .then(article => {
             if(article){
                 res.status(200).json(article)
