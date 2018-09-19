@@ -2,6 +2,7 @@ const router = require('express').Router()
 const ObjectId = require('mongoose').Types.ObjectId
 const Article = require('../models/Article')
 const User = require('../models/User')
+const Comments = require('../models/Comment')
 const { verify } = require('../helpers/jwt')
 const { authen, authorArticle } = require('../helpers/auth')
 // authen author
@@ -51,16 +52,23 @@ router.get('/', function(req, res){
 })
 
 router.get('/:id', function(req, res){
+    let articleUser
     Article
-        .findById(ObjectId(req.params.id)).populate('author').populate('comment')
+        .findById(ObjectId(req.params.id)).populate('author').populate('comment').populate('userId')
         .then(article => {
+            articleUser = article
             if(article){
-                res.status(200).json(article)
+                // res.status(200).json(article)
+                return Comments.find({ articleId: ObjectId(req.params.id) }).populate('userId')
             }else{
                 res.status(404).json({
                     message: 'Article Not Found'
                 })
             }
+        })
+        .then(comments => {
+            articleUser.comment = comments
+            res.status(200).json(articleUser)
         })
         .catch(err => {
             res.status(500).json(err)

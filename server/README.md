@@ -9,5 +9,5 @@
 | /articles/:id         | GET    | return specific article and comments                 |
 | /articles             | PUT    | body: articleId, title, content. headers: token      |
 | /comment              | GET    | BELOM                                                |
-| /comment              | POST   | body: commentId, content. headers: token             |
+| /comment              | POST   | body: articleId, content. headers: token             |
 | /comment              | DELETE | body: commentId. headers: token                      |
