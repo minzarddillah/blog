@@ -3,9 +3,9 @@
   <ul class="list-group" v-for="(comment, index) in comments" v-bind:key="index">
     <li class="list-group-item active">{{ comment.userId.email }}</li>
     <li class="list-group-item">{{ comment.content }}</li>
-    <span>
-    <button type="button" class="btn btn-danger" v-if="emailUser === comment.userId.email" v-on:click="deleteComment(comment._id)">Delete</button>
-    </span>
+    <li class="list-group-item"  v-if="emailUser === comment.userId.email">
+    <button type="button" class="btn btn-danger" v-on:click="deleteComment(comment._id)">Delete</button>
+    </li>
   </ul>
   </div>
 </template>

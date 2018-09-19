@@ -8,7 +8,7 @@
           <div class="card-body">
             <h5 class="card-title">Welcome {{ nameUser }}</h5>
             <p class="card-text"><small class="text-muted">total of all your articles is {{ totalArticles }}</small></p>
-            <button type="button" class="btn btn-primary btn-lg btn-block">My articles</button>
+            <router-link to="/my-articles" type="button" class="btn btn-primary btn-lg btn-block" v-if="isLogin">My articles</router-link>
           </div>
         </div>
         <br>

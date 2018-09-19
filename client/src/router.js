@@ -27,6 +27,10 @@ export default new Router({
         {
           path: '/article/:id',
           component: () => import('./components/fullPageArticle.vue')
+        },
+        {
+          path: '/my-articles',
+          component: () => import('./components/MyArticle.vue')
         }
       ]
     },

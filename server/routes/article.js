@@ -51,30 +51,6 @@ router.get('/', function(req, res){
         })
 })
 
-router.get('/:id', function(req, res){
-    let articleUser
-    Article
-        .findById(ObjectId(req.params.id)).populate('author').populate('comment').populate('userId')
-        .then(article => {
-            articleUser = article
-            if(article){
-                // res.status(200).json(article)
-                return Comments.find({ articleId: ObjectId(req.params.id) }).populate('userId')
-            }else{
-                res.status(404).json({
-                    message: 'Article Not Found'
-                })
-            }
-        })
-        .then(comments => {
-            articleUser.comment = comments
-            res.status(200).json(articleUser)
-        })
-        .catch(err => {
-            res.status(500).json(err)
-        })
-})
-
 router.put('/', authen, authorArticle, function(req, res) {
     let update = {}
     let keys = Object.keys(req.body)
@@ -107,6 +83,45 @@ router.delete('/', authen, authorArticle, function(req,res){
             })
         })
         .catch(err =>{
+            res.status(500).json(err)
+        })
+})
+
+router.get('/my-articles', authen, function(req, res) {
+    // console.log(`masok`)
+    verify(req.headers.token)
+        .then(decoded => {
+            // console.log(decoded)
+            return Article.find({ author: ObjectId(decoded._id) }).populate('author')
+        })
+        .then(articles => {
+            res.status(200).json(articles)
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
+})
+
+router.get('/:id', function(req, res){
+    let articleUser
+    Article
+        .findById(ObjectId(req.params.id)).populate('author').populate('comment').populate('userId')
+        .then(article => {
+            articleUser = article
+            if(article){
+                // res.status(200).json(article)
+                return Comments.find({ articleId: ObjectId(req.params.id) }).populate('userId')
+            }else{
+                res.status(404).json({
+                    message: 'Article Not Found'
+                })
+            }
+        })
+        .then(comments => {
+            articleUser.comment = comments
+            res.status(200).json(articleUser)
+        })
+        .catch(err => {
             res.status(500).json(err)
         })
 })
