@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000
 if(process.env.NODE_ENV){
     mongoose.connect('mongodb://localhost:27017/blog-test')
 }else{
-    mongoose.connect('mongodb://localhost:27017/blog')
+    mongoose.connect(process.env.DATABASE)
 }
 
 db.on('error', console.error.bind(console, 'connection error:'));
