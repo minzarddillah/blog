@@ -9,36 +9,65 @@ var expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('article', function () {
-    // this.afterAll(function (done) {
-    //     Article
-    //         .remove({})
-    //         .then(res =>{
-    //             return User.findByIdAndUpdate(ObjectId("5b9f7199ed78957792190482"),{ $unset: {"articles": []}} )
-    //         })
-    //         .then(res =>{
-    //             done()
-    //         })
-    // })
+    let token
 
+    this.beforeAll(function (done) {
+        chai
+            .request(app)
+            .post('/signup')
+            .send({
+                name: `Minzard`,
+                email: `minzard.dillah@gmail.com`,
+                password: `123456`
+            })
+            .end(function (err, res) {
+                chai
+                    .request(app)
+                    .post('/signin')
+                    .send({
+                        email: `minzard.dillah@gmail.com`,
+                        password: `123456`
+                    })
+                    .end(function (err, res) {
+                        let result = res.body
+                        token = result.token
+                        done()
+                    });
+            });
+        
+    })
+
+    this.afterAll(function (done) {
+        User
+            .remove({})
+            .then(res =>{
+                done()
+            })
+    })
+
+
+    // ==================== TEST ARTICLE ====================
+    let articleId
     // CREATE ARTICLE
-    // it('POST /articles should return new article', function (done) {
-    //     chai
-    //         .request(app)
-    //         .post('/articles')
-    //         .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
-    //         .send({
-    //             title: 'TEST ARTICLE',
-    //             description: 'TEST BUAT ARTICLE'
-    //         })
-    //         .end(function (err, res) {
-    //             let response = res.body
-    //             expect(res).to.have.status(200)
-    //             expect(response).to.have.property('message')
-    //             expect(response.message).to.equal('Success Create Article')
-    //             expect(response.data).to.have.property('title')
-    //             done()
-    //         })
-    // })
+    it('POST /articles should return new article', function (done) {
+        chai
+            .request(app)
+            .post('/articles')
+            .set('token', token)
+            .send({
+                title: 'TEST ARTICLE',
+                description: 'TEST BUAT ARTICLE'
+            })
+            .end(function (err, res) {
+                let response = res.body
+                articleId = response.data._id
+                expect(res).to.have.status(200)
+                expect(response).to.have.property('message')
+                expect(response.message).to.equal('Success Create Article')
+                expect(response.data).to.have.property('title')
+                done()
+            })
+    })
 
     // GET ALL ARTICLES
     it('GET /articles should return all artice', function (done) {
@@ -53,15 +82,14 @@ describe('article', function () {
             })
     })
 
-
     // UPDATE ARTICLE
     it('PUT /articles should return new updated article', function (done) {
         chai
             .request(app)
             .put('/articles')
-            .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
+            .set('token', token)
             .send({
-                articleId: "5b9f7f1374cce202f1a5f5d8",
+                articleId: articleId,
                 title: 'UPDATE JUDUL ARTICLE'
             })
             .end(function (err, res) {
@@ -72,99 +100,71 @@ describe('article', function () {
     })
 
     // DELETE ARTICLE
-    // it('/DELETE /articles should return delete article', function (done) {
-    //     chai
-    //         .request(app)
-    //         .del('/articles')
-    //         .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
-    //         .send({
-    //             articleId: "5b9f7f1374cce202f1a5f5d8"
-    //         })
-    //         .end(function (err, res){
-    //             expect(res).to.have.status(200)
-    //             console.log(`MASUK PAK EKO`)
-    //             done()
-    //         })
-    // })
-})
+    it('/DELETE /articles should return delete article', function (done) {
+        chai
+            .request(app)
+            .del('/articles')
+            .set('token', token)
+            .send({
+                articleId: articleId
+            })
+            .end(function (err, res){
+                expect(res).to.have.status(200)
+                done()
+            })
+    })
 
-describe('comment', function () {
-    // this.afterAll(function(done){
-    //     Comments
-    //         .remove({})
-    //         .then(response =>{
-    //             done()
-    //         })
-    // })
 
+    // ==================== TEST COMMENT ====================
+    let commentId
+    // CREATE COMMENT
     it('POST /comment', function (done) {
         chai
             .request(app)
             .post('/comment')
-            .set('token', `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjlmNzE5OWVkNzg5NTc3OTIxOTA0ODIiLCJlbWFpbCI6ImFkbWluQGJsb2cuY29tIiwiaWF0IjoxNTM3MTc1OTYxfQ._Lb2DWSbmQn-mZzYrPgJ4hesjjopyIA-nQbrFyDsRmY`)
+            .set('token', token)
             .send({
-                userId: "5b9f7f1374cce202f1a5f5d8",
-                articleId: "5b9f7199ed78957792190482",
+                articleId: articleId,
                 content: 'INI KOMENTAR'
             })
             .end(function (err, res) {
                 let response = res.body
+                commentId = response.data._id
                 expect(res).to.have.status(200)
                 expect(response).to.have.property('message')
                 expect(response.message).to.equal('Berhasil menambah komenter')
                 done()
             })
     })
-})
 
-describe('user', function () {
-    this.afterAll(function (done) {
-        User
-            .remove({
-                email: {
-                    $ne: 'admin@blog.com'
-                }
+    // EDIT COMMENT
+    it('PUT /comment should return updated comment', function (done) {
+        chai
+            .request(app)
+            .put('/comment')
+            .set('token', token)
+            .send({
+                commentId: commentId,
+                content: 'KOMENTAR YANG UDAH DI UPDATE'
             })
-            .then(res => {
+            .end(function (err, res) {
+                expect(res).to.have.status(200)
+                expect(res.body.message).to.equal('Berhasil Edit Comment')
                 done()
             })
     })
 
-    // SIGNUP USER
-    it('POST /signup should return new user', function (done) {
+    // DELETE COMMENT
+    it('DELETE /comment should delete comment', function (done) {
         chai
             .request(app)
-            .post('/signup')
+            .del('/comment')
+            .set('token', token)
             .send({
-                name: `Minzard`,
-                email: `minzard.dillah@gmail.com`,
-                password: `123456`
+                commentId: commentId
             })
             .end(function (err, res) {
-                let newUser = res.body.data
                 expect(res).to.have.status(200)
-                expect(newUser).to.be.a('object')
-                expect(newUser).to.have.property('name')
-                expect(newUser).to.have.property('email')
-                expect(newUser).to.have.property('password')
-                expect(newUser.name).to.equal('Minzard')
-                done()
-            })
-    })
-
-    // SIGNIN USER
-    it(`POST /signin should return token`, function (done) {
-        chai
-            .request(app)
-            .post('/signin')
-            .send({
-                email: `admin@blog.com`,
-                password: `123456`
-            })
-            .end(function (err, res) {
-                let result = res.body
-                expect(res).to.have.status(200)
-                expect(result).to.have.property('token')
                 done()
             })
     })
